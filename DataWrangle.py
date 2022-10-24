@@ -7,15 +7,9 @@ class DataWrangle(object):
 
     def clean_data(self,data):
         """Function cleans up data - year, month, datetime, and some changes. More will be needed"""
-
-        print('test')
-
-
         import pandas as pd
         import datetime
 
-
-        print("clean data invoked")
 
         data.rename(columns={'@realtime_start':'realtime_start','@realtime_end':'realtime_end','@date':'date', '@value':'value'},inplace=True)
 
@@ -25,17 +19,24 @@ class DataWrangle(object):
 
         #to do: remove bad charaters so float can be converted.
         #data['value']=data.value.astype(float)
-    def DQ_H6Measure(data,frequency,season_adj_short,year):
-
+    def DQ_H6Measure(self,data,frequency,season_adj_short,year=None):
 
         """This fucntion creates a datasets for Data Quality Measure. Test """
 
         money_market=['DEMDEPNS','MDLNM','CURRNS']
         import numpy as np
+        #print(data.head())
 
-        filtered_data=data[(data.name=="H.6 Money Stock Measures")&\
-                           (data.frequency==frequency)&\
-                           (data.seasonal_adjustment_short==season_adj_short)&(data.year==year)]
+        if year!=None:
+
+            filtered_data=data[(data.name=="H.6 Money Stock Measures")&\
+                               (data.frequency==frequency)&\
+                               (data.seasonal_adjustment_short==season_adj_short)&(data.year==year)]
+        else:
+            filtered_data=data[(data.name=="H.6 Money Stock Measures")&\
+                                   (data.frequency==frequency)&\
+                                   (data.seasonal_adjustment_short==season_adj_short)]
+
 
         final_analysis=filtered_data[filtered_data.series_id.isin(money_market)].groupby(['title','series_id','date'])\
         .agg({"value":np.sum}).reset_index()

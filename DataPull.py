@@ -63,7 +63,7 @@ class DataPull(object):
                 observations=pd.DataFrame(dict_data.get('observations', {}).get('observation'))
 
                 observations['series_id']=str(v)
-                appended_data_2.
+                #appended_data_2.
 
                 appended_data_2.append(observations)
                 seriesc.append(v)
