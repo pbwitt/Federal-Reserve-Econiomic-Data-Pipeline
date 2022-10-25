@@ -1,7 +1,7 @@
 
 class DataWrangle(object):
     def __init__(self):
-        print(__name__)
+        ##print(__name__)
         print("DataWrangle Class Invoked. This is a draft demonstration. Author Paul Witt.  Original Work.")
     #Make return rows a global function.
 
@@ -20,6 +20,7 @@ class DataWrangle(object):
         #to do: remove bad charaters so float can be converted.
         #data['value']=data.value.astype(float)
     def DQ_H6Measure(self,data,frequency,season_adj_short,year=None):
+        print('run data')
 
         """This fucntion creates a datasets for Data Quality Measure. Test """
 

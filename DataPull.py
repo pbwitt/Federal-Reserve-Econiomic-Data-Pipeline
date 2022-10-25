@@ -1,6 +1,6 @@
 class DataPull(object):
     def __init__(self):
-        print(__name__)
+        #print(__name__)
         print("DataPull Class Invoked. This is a draft demonstration. Author Paul Witt.  Original Work.")
     #Make return rows a global function.
     def data_pull(self):
@@ -11,17 +11,25 @@ class DataPull(object):
         import requests
         import pandas as pd
 
+        #pulls from three API Endpoints
+        #to do: add api Key as parameter
+
         api_key='api_key=d0640df392d50e841ab2e3c22bf258ed'
         releases = requests.get('https://api.stlouisfed.org/fred/releases?api_key=d0640df392d50e841ab2e3c22bf258ed&file_type=json')
         series = requests.get('https://api.stlouisfed.org/fred/category/series?&api_key=d0640df392d50e841ab2e3c22bf258ed&file_type=json')
-        obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id=CURRNS&api_key=d0640df392d50e841ab2e3c22bf258ed')
-
+        #obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id=CURRNS&api_key=d0640df392d50e841ab2e3c22bf258ed')
+        #had issues with the obervations requets json.  pulled xml to save time.
+        #load Json file
         releases = json.loads(releases.text)
         series = json.loads(series.text)
 
+        #put releases json into dataframe.
         releases_df=pd.DataFrame(releases)
+        #normalize last column - this is the data we really need.
         releases_df=pd.json_normalize(releases_df.releases)
+        #create a unique list of release ids.  This will be used to loop through all series.
         release_id_unique_list=releases_df.id.unique().tolist()
+
 
 
         print('pulling all releases')
@@ -35,9 +43,10 @@ class DataPull(object):
                 series_relese_id = json.loads(series_relese_id.text)
                 series_relese_id=pd.DataFrame(series_relese_id)
                 series_relese_id_2=pd.json_normalize(series_relese_id.seriess)
-                series_relese_id_2['release_id']=v
+                series_relese_id_2['release_id']=v #add series ID back to file this will be needed to merge with ohter datasets.
                 release_dataset.append(series_relese_id_2)
         except:
+            #if
             print(str(v) + " this release id did not read")
             pass
 
@@ -53,23 +62,21 @@ class DataPull(object):
         #fetches the obersvation data. loops thorugh each obersvation set by inserting the series id in.
 
         try:
-            for x ,v  in enumerate(unique_series_id_list[1:25]):
-                print(len(unique_series_id_list))
+            for x ,v  in enumerate(unique_series_id_list):
+                #print(len(unique_series_id_list))
 
                 obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id='+v+'&api_key=d0640df392d50e841ab2e3c22bf258ed')
                 dict_data = xmltodict.parse(obervations.content)
                 df = pd.DataFrame(dict_data, columns=dict_data.keys())
 
                 observations=pd.DataFrame(dict_data.get('observations', {}).get('observation'))
-
                 observations['series_id']=str(v)
-                #appended_data_2.
 
                 appended_data_2.append(observations)
                 seriesc.append(v)
 
         except:
-            print(str(v) + " this id did not read")
+            print(str(v) + " this series id did not read")
             pass
 
         observations_data = pd.concat(appended_data_2)
