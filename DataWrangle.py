@@ -5,7 +5,7 @@ class DataWrangle(object):
         print("DataWrangle Class Invoked. This is a draft demonstration. Author Paul Witt.  Original Work.")
     #Make return rows a global function.
 
-    def clean_data(self,data):
+    def clean_data(data):
         """Function cleans up data - year, month, datetime, and some changes. More will be needed"""
         import pandas as pd
         import datetime
@@ -19,15 +19,14 @@ class DataWrangle(object):
 
         #to do: remove bad charaters so float can be converted.
         #data['value']=data.value.astype(float)
-    def DQ_H6Measure(self,data,frequency,season_adj_short,year=None):
+    def DQ_H6Measure(data,frequency,season_adj_short,year=None):
         print('run data')
 
         """This fucntion creates a datasets for Data Quality Measure. Test """
-
+        # filter on component parts
         money_market=['DEMDEPNS','MDLNM','CURRNS']
         import numpy as np
-        #print(data.head())
-
+        # create parameter option. Filter on year if available, if not, pull all.
         if year!=None:
 
             filtered_data=data[(data.name=="H.6 Money Stock Measures")&\
@@ -44,20 +43,20 @@ class DataWrangle(object):
 
         final_analysis['value']=final_analysis['value'].astype(float)
 
-
+        # filer on M1.  This is the data aggregate pulled directly from the API.  Used to compare against componets,
         M1=filtered_data[filtered_data.series_id=='M1NS'].groupby(['title','series_id','date']).agg({"value":np.sum}).reset_index()
-        M1.rename(columns={'value':'groupTotal'},inplace=True)
+        M1.rename(columns={'value':'pulled_m1'},inplace=True)
 
 
-        M1.groupTotal=M1.groupTotal.astype(float)
+        M1.pulled_m1=M1.pulled_m1.astype(float)
 
         pivot1=final_analysis.pivot(index='date',columns='title',values='value')
 
         final_pivot=pivot1.reset_index()
-        final_pivot['sum_from_component']=final_pivot.iloc[:, 1:].sum(axis=1)
+        final_pivot['calculated_m1']=final_pivot.iloc[:, 1:].sum(axis=1)
 
-        final_subtraction=final_pivot.merge(M1[['date','groupTotal']],how='inner',on="date")
-        final_subtraction['solution']=final_subtraction.iloc[:, -2]-final_subtraction.iloc[:, -1]
+        final_subtraction=final_pivot.merge(M1[['date','pulled_m1']],how='inner',on="date")
+        final_subtraction['difference']=final_subtraction.iloc[:, -2]-final_subtraction.iloc[:, -1]
 
 
         return final_subtraction

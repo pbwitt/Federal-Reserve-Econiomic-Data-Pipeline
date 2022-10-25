@@ -31,11 +31,11 @@ def pull(frequency):
 
 
     print('cleaning data')
-    DW.DataWrangle.clean_data('self',result_set)
+    DW.DataWrangle.clean_data(result_set)
     print('cleanding data complete')
     print(result_set.columns)
 
-    to_file=DW.DataWrangle.DQ_H6Measure('self',result_set,frequency,'NSA')
+    to_file=DW.DataWrangle.DQ_H6Measure(result_set,frequency,'NSA')
     to_file.to_csv('tofile.csv')
 
 

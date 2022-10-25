@@ -2,46 +2,47 @@
 
 ### Key Features:
 
-To me, a successful dat apipeline should do the following:
+To me, a successful data pipeline should do the following:
 
-1) Automate data extraction and wrangling. The work is done upfront.  Once code is final, little work is required to maintain it.    
+1) Automate data extraction and wrangling. The work is done upfront.  Once code is final, little work is required to maintain it.    
 
-2) Produce reusable code so others can use it. Custom python data pull and data wrangle modules make a user friendly API.
+2) Produce reusable code so others can access it. Custom python data pull and data wrangle modules make a user friendly API.  This is my preferred method for databases as well.
 
 3) Produce datasets that are optimized for aggregations. In other words, datasets that can be loaded and used for analysis in other applications. I prefer to work with single flat files or data frame objects if resources permit.  Once DataPull functions are written and automated, the focus is primarily on doing analysis.
 
-For this exercise, I built several custom python modules. These libraries could be made available on gitlabs.  
+For this exercise, I built several custom python modules. These modules could be made available on gitlabs.  
 
 ### Documentation
 DataPull:
+class DataPull.pull_data()
 
-pull_data():
 
-Pulls data from 3 API endpoints.  Automatically loops through each endpoint, pulls all available data, appends and merges them together.  The result is one raw dataset that can be used for more in-depth analysis, including aggregations and data qualty checks.  
+Pulls data from FRED API endpoints.  Automatically loops through each endpoint, pulls all available data, appends and merges them together as appropriate.  The result is one raw dataset that can be used for more in-depth analysis, including aggregations, data quality checks, and model inputs.  Also useful for stakeholders who just want raw data.  
 
 DataWrangle:
 
-Cleans, formats and does other custom aggregations to the data pulled from FRED.  Cleans column headings, creates year and month columns.  This module is created separate from DataPull because there will be a continual need to add new functions in the future.  It is also good to keep raw data in its original format to troubleshoot potential issues.  
+Cleans, formats and does other custom aggregations to the data pulled from FRED.  Cleans column headings, creates year and month columns.  This module is created separate from DataPull because there will be a continual need to add new functions in the future.  It is also good to keep raw data in its original format to troubleshoot and understand potential data issues.  
 functions:
 
 #### clean_data(data)
-accepts dataframe object.
+accepts dataframe object.  Cleans column headings, creates year and month columns.  
 
 
 #### DQ_H6Measure(data,frequency,season_adj_short,year)
 
 Parameters:
-result_set: datframe object.
-
+data: DataFrame object.
 
 frequency: string - frequency of data requested: 'Monthly', 'Yearly', etc.
 
-
 season_adj_short: string- provide seasonal adjustment parameter i.e. "NSA"
 
+year: calendar year, default is None. Will return all years.
 
 # Automation
 
 For automation, I use the python schedule module.  It allows for scheduling jobs at time intervals of the developers choosing. https://schedule.readthedocs.io/en/stable/
+
+The automation script incorporates different checks to help troubleshoot potential data issues.  Larger pulls can be scheduled at night or early morning.  Runs from terminal on windows, mac or linux
 
 ![alt text](https://github.com/pbwitt/Federal-Reserve-Econiomic-Data-Pipeline/blob/main/Automation%20Terminal%20.png)
