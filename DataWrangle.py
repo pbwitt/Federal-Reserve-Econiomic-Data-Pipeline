@@ -10,7 +10,6 @@ class DataWrangle(object):
         import pandas as pd
         import datetime
 
-
         data.rename(columns={'@realtime_start':'realtime_start','@realtime_end':'realtime_end','@date':'date', '@value':'value'},inplace=True)
 
         data['date']=pd.to_datetime(data['date'])
@@ -20,9 +19,9 @@ class DataWrangle(object):
         #to do: remove bad charaters so float can be converted.
         #data['value']=data.value.astype(float)
     def DQ_H6Measure(data,frequency,season_adj_short,year=None):
-        print('run data')
+        print('run DQ measure')
 
-        """This fucntion creates a datasets for Data Quality Measure. Test """
+        """This fucntion creates a datasets for Data Quality Measure."""" 
         # filter on component parts
         money_market=['DEMDEPNS','MDLNM','CURRNS']
         import numpy as np
@@ -53,10 +52,14 @@ class DataWrangle(object):
         pivot1=final_analysis.pivot(index='date',columns='title',values='value')
 
         final_pivot=pivot1.reset_index()
-        final_pivot['calculated_m1']=final_pivot.iloc[:, 1:].sum(axis=1)
+        final_pivot['calculated_m1']=final_pivot.iloc[:, 1:].astype(float).sum(axis=1)
 
         final_subtraction=final_pivot.merge(M1[['date','pulled_m1']],how='inner',on="date")
         final_subtraction['difference']=final_subtraction.iloc[:, -2]-final_subtraction.iloc[:, -1]
 
+        #need to round because of funny buisness with floating points.  #july calculation was off
+        final_subtraction=np.round(final_subtraction, decimals=4)
+
+        final_subtraction['difference']=final_subtraction['calculated_m1']-final_subtraction['pulled_m1']
 
         return final_subtraction
