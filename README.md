@@ -43,3 +43,5 @@ season_adj_short: string- provide seasonal adjustment parameter i.e. "NSA"
 # Automation
 
 For automation, I use the python schedule module.  It allows for scheduling jobs at time intervals of the developers choosing. https://schedule.readthedocs.io/en/stable/
+
+![alt text](https://github.com/pbwitt/Federal-Reserve-Econiomic-Data-Pipeline/blob/main/Automation%20Terminal%20.png)
