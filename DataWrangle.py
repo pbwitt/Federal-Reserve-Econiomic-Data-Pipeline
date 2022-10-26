@@ -21,7 +21,7 @@ class DataWrangle(object):
     def DQ_H6Measure(data,frequency,season_adj_short,year=None):
         print('run DQ measure')
 
-        """This fucntion creates a datasets for Data Quality Measure.""""
+        """This function creates datasets for Data Quality Measure."""
         # filter on component parts
         money_market=['DEMDEPNS','MDLNM','CURRNS']
         import numpy as np
