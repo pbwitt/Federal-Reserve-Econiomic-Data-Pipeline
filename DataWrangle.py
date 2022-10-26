@@ -21,7 +21,7 @@ class DataWrangle(object):
     def DQ_H6Measure(data,frequency,season_adj_short,year=None):
         print('run DQ measure')
 
-        """This fucntion creates a datasets for Data Quality Measure."""" 
+        """This fucntion creates a datasets for Data Quality Measure.""""
         # filter on component parts
         money_market=['DEMDEPNS','MDLNM','CURRNS']
         import numpy as np
@@ -58,7 +58,7 @@ class DataWrangle(object):
         final_subtraction['difference']=final_subtraction.iloc[:, -2]-final_subtraction.iloc[:, -1]
 
         #need to round because of funny buisness with floating points.  #july calculation was off
-        final_subtraction=np.round(final_subtraction, decimals=4)
+        final_subtraction=np.round(final_subtraction, decimals=2)
 
         final_subtraction['difference']=final_subtraction['calculated_m1']-final_subtraction['pulled_m1']
 
