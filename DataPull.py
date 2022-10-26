@@ -29,16 +29,17 @@ class DataPull(object):
         releases_df=pd.json_normalize(releases_df.releases)
         #create a unique list of release ids.  This will be used to loop through all series.
         release_id_unique_list=releases_df.id.unique().tolist()
-
+        #print(release_id_unique_list)
 
 
         print('pulling all releases')
         release_dataset = []
         # enumerate through all the release series.
         #It uses a unique list of release id, loops through them individually and puts them into one dataset.
+
         try:
-            for x ,v  in enumerate(release_id_unique_list):
-                #print(v)
+            for x ,v  in enumerate([21,22]):
+
                 series_relese_id=requests.get('https://api.stlouisfed.org/fred/release/series?release_id='+ str(v) +'&'+str(api_key)+'&file_type=json')
                 series_relese_id = json.loads(series_relese_id.text)
                 series_relese_id=pd.DataFrame(series_relese_id)
@@ -46,34 +47,46 @@ class DataPull(object):
                 series_relese_id_2['release_id']=v #add series ID back to file this will be needed to merge with ohter datasets.
                 release_dataset.append(series_relese_id_2)
         except:
-            #if
+
             print(str(v) + " this release id did not read")
             pass
 
         release_dataset = pd.concat(release_dataset)
-        print('finished pulling releaes')
+        #print('finished pulling releaes')
+        #print(release_dataset.id.unique())
 
-        unique_series_id_list=release_dataset.id.unique().tolist()
+        #unique_series_id_list=release_dataset.id.unique().tolist()
+        #print(len(unique_series_id_list))
+        #print([x for x in unique_series_id_list if x =='MINS'])
+        #print(release_dataset.head(3))
+
+
 
         appended_data_2 = []
-        seriesc=[]
+
 
         print('pulling observations')
         #fetches the obersvation data. loops thorugh each obersvation set by inserting the series id in.
 
+        #if series_list!=None:
+            #unique_series_id_list=series_list
+            #print(unique_series_id_list)
+        series_id_money=['M1NS','DEMDEPNS','MDLNM','CURRNS']
+
         try:
-            for x ,v  in enumerate(unique_series_id_list):
-                #print(len(unique_series_id_list))
+            for x ,v  in enumerate(series_id_money):
 
                 obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id='+v+'&api_key=d0640df392d50e841ab2e3c22bf258ed')
+
                 dict_data = xmltodict.parse(obervations.content)
                 df = pd.DataFrame(dict_data, columns=dict_data.keys())
+                print(df.head())
 
                 observations=pd.DataFrame(dict_data.get('observations', {}).get('observation'))
                 observations['series_id']=str(v)
 
                 appended_data_2.append(observations)
-                seriesc.append(v)
+                #print(appended_data_2)
 
         except:
             print(str(v) + " this series id did not read")
@@ -85,5 +98,6 @@ class DataPull(object):
 
         release_series=release_dataset.merge(releases_df[['id','name']],how='inner',right_on='id',left_on='release_id')
         final_result_set=observations_data.merge(release_series,left_on='series_id',right_on='id_x')
+        #final_result_set=observations_data
 
         return final_result_set
