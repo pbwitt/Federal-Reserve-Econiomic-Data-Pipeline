@@ -61,12 +61,8 @@ The automation script incorporates different checks to help troubleshoot potenti
 # Data Wrangling and Analysis
 
 
-![alt text](https://github.com/pbwitt/Federal-Reserve-Econiomic-Data-Pipeline/blob/main/Money_Stock.jpeg)
-
-
 ### H.6 Money Stock Measures Data Requirements
 
-An Analysis presented to the Federal Reserve Board 
 
 Tasks to be completed:
 
@@ -101,6 +97,8 @@ Use custom Data Pull API to pull data from the FRED API.
 ```python
 import DataPull as dp
 import pandas as pd
+import warnings
+warnings.filterwarnings('ignore')
 ```
 
 
@@ -113,7 +111,8 @@ fetch=dp.DataPull()
 
 
 ```python
-# the data_pull function outputs helpful updates during the data pull. This is important for trouble shooting. 
+# the data_pull function outputs helpful updates during the data pull. 
+# This is important for trouble shooting and monitoring. 
 # currently it outputs which release ids and series ids were not pulled from FRED.  
 result_set=fetch.data_pull()
 ```
@@ -339,7 +338,7 @@ results_2022
 
 #### Final Results
 
-Table 3 Money Stock Measures were updated on 10-25-2022. The requst was for data through August 2022.  As such, the final output will filter out September 2022. 
+Table 3 Money Stock Measures were updated on 10-25-2022. The request was for data through August 2022.  As such, the final output will filter out September 2022. 
 
 
 
@@ -448,6 +447,11 @@ final_results
 
 ```python
 final_results=final_results[final_results.date.dt.month<9]
+```
+
+
+```python
+final_results.difference=final_results.difference.round(2)
 ```
 
 
