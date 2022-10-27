@@ -14,7 +14,7 @@ A successful data pipeline should do the following:
 
 For this exercise, I automated the extraction and wrangling, and produced flat files that were used to perform the requested calculations from the fred API.  The files were exported for use in Tableau Dashboards, which were published to Tableau Public.  In general, this workflow, or ETL, is used in most successful data pipelines.  
 
-I built several custom python modules. These modules could be made available on gitlabs in an internal enviroment.  #NOTE: because of FRED API rate limits, these modules may not function properly.  The below code is for demonstration purposes only.  All work is original. 
+I built several custom python modules. These modules could be made available on gitlabs in an internal enviroment.  #NOTE: because of FRED API rate limits, these modules may not be stable.  The modules were used to calculate the correct solution that was requested. The below code is for demonstration purposes only.  All work is original. 
 
 
 ### Documentation
