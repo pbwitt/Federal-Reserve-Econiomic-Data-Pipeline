@@ -5,7 +5,7 @@ class DataPull(object):
     #Make return rows a global function.
     def data_pull(self):
 
-        """This function pulls data from FRED API. The general idea is that it pulls all all requested data, joins and merges it, and returns raw data that will be used elsewhare.
+        """This function pulls data from FRED API. The general idea is that it pulls all requested data, joins and merges it, and returns raw data that will be used elsewhare.
         the goal is to create a user friendly API that can be used for automation and by others.  It elimiates the need to spend alot of time messing with the API.  This can also be
         done with database pulls. The code below is for demonstration purposes only.  The FRED API has rate limits so the results may be unstable.  If needed, adjustments would be used
         to hangle the rate changes"""
