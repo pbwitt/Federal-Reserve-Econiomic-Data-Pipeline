@@ -46,6 +46,7 @@ class DataWrangle(object):
         M1=filtered_data[filtered_data.series_id=='M1NS'].groupby(['title','series_id','date']).agg({"value":np.sum}).reset_index()
         M1.rename(columns={'value':'pulled_m1'},inplace=True)
 
+        # do more wranling.  Do necessary groupings and pivots and merging for final calculation.
 
         M1.pulled_m1=M1.pulled_m1.astype(float)
 

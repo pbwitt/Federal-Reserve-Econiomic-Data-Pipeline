@@ -5,6 +5,11 @@ class DataPull(object):
     #Make return rows a global function.
     def data_pull(self):
 
+        """This function pulls data from FRED API. The general idea is that it pulls all all requested data, joins and merges it, and returns raw data that will be used elsewhare.
+        the goal is to create a user friendly API that can be used for automation and by others.  It elimiates the need to spend alot of time messing with the API.  This can also be
+        done with database pulls. The code below is for demonstration purposes only.  The FRED API has rate limits so the results may be unstable.  If needed, adjustments would be used
+        to hangle the rate changes"""
+
         import xmltodict
         import requests
         import json
@@ -17,8 +22,7 @@ class DataPull(object):
         api_key='api_key=d0640df392d50e841ab2e3c22bf258ed'
         releases = requests.get('https://api.stlouisfed.org/fred/releases?api_key=d0640df392d50e841ab2e3c22bf258ed&file_type=json')
         series = requests.get('https://api.stlouisfed.org/fred/category/series?&api_key=d0640df392d50e841ab2e3c22bf258ed&file_type=json')
-        #obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id=CURRNS&api_key=d0640df392d50e841ab2e3c22bf258ed')
-        #had issues with the obervations requets json.  pulled xml to save time.
+
         #load Json file
         releases = json.loads(releases.text)
         series = json.loads(series.text)
@@ -32,18 +36,18 @@ class DataPull(object):
         #print(release_id_unique_list)
 
 
-        print('pulling all releases')
+        print('pulling releases')
         release_dataset = []
         # enumerate through all the release series.
         #It uses a unique list of release id, loops through them individually and puts them into one dataset.
 
         try:
-            for x ,v  in enumerate([21,22]):
+            for x ,v  in enumerate([21]):
 
                 series_relese_id=requests.get('https://api.stlouisfed.org/fred/release/series?release_id='+ str(v) +'&'+str(api_key)+'&file_type=json')
                 series_relese_id = json.loads(series_relese_id.text)
                 series_relese_id=pd.DataFrame(series_relese_id)
-                series_relese_id_2=pd.json_normalize(series_relese_id.seriess)
+                series_relese_id_2=pd.json_normalize(series_relese_id.seriess) # converts json into DataFrame
                 series_relese_id_2['release_id']=v #add series ID back to file this will be needed to merge with ohter datasets.
                 release_dataset.append(series_relese_id_2)
         except:
@@ -52,41 +56,30 @@ class DataPull(object):
             pass
 
         release_dataset = pd.concat(release_dataset)
-        #print('finished pulling releaes')
-        #print(release_dataset.id.unique())
-
-        #unique_series_id_list=release_dataset.id.unique().tolist()
-        #print(len(unique_series_id_list))
-        #print([x for x in unique_series_id_list if x =='MINS'])
-        #print(release_dataset.head(3))
-
+        series_id_unique_list=release_dataset.id.unique().tolist()
 
 
         appended_data_2 = []
 
 
         print('pulling observations')
-        #fetches the obersvation data. loops thorugh each obersvation set by inserting the series id in.
 
-        #if series_list!=None:
-            #unique_series_id_list=series_list
-            #print(unique_series_id_list)
-        series_id_money=['M1NS','DEMDEPNS','MDLNM','CURRNS']
+        series_id_list=['M1NS','DEMDEPNS','MDLNM','CURRNS'] #only pull money stock measures.
 
         try:
-            for x ,v  in enumerate(series_id_money):
+            for x ,v  in enumerate(series_id_list):
 
                 obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id='+v+'&api_key=d0640df392d50e841ab2e3c22bf258ed')
+                #had issues with the obervations requets json.  pulled xml to save time.
 
-                dict_data = xmltodict.parse(obervations.content)
-                df = pd.DataFrame(dict_data, columns=dict_data.keys())
-                print(df.head())
-
-                observations=pd.DataFrame(dict_data.get('observations', {}).get('observation'))
+                dict_data = xmltodict.parse(obervations.content) #parse the xmlx results . returns dict oject
+                #df = pd.DataFrame(dict_data, columns=dict_data.keys()) # convert to dataframe
+                observations=pd.DataFrame(dict_data.get('observations', {}).get('observation'))#convert dict to DataFrame
+                #add series id back in.  This will be needed to join back with other datasets.
                 observations['series_id']=str(v)
 
                 appended_data_2.append(observations)
-                #print(appended_data_2)
+
 
         except:
             print(str(v) + " this series id did not read")

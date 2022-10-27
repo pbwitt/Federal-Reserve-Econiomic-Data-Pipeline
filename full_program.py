@@ -13,6 +13,7 @@ import time
 def pull(frequency):
     print('')
     print('\nRunning DataPull from full program script....')
+    print('for demonstration purposes only')
 
     import DataPull as dp
     import pandas as pd
@@ -21,7 +22,7 @@ def pull(frequency):
     pull_data=dp.DataPull()
     fetch_data=pull_data.data_pull()
     print('DataPull Sucessful. ')
-    print('writing raw appended data to disc')
+    print('writing raw appended data to disk')
     print(fetch_data.count())
     fetch_data.to_csv('result_set_from_automation.csv')
     result_set=fetch_data
@@ -42,7 +43,7 @@ def pull(frequency):
     pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 def main():
-
+    """Main method.  argv is used to accept inputs via terminal"""
     frequency= argv[2]
 
     print(argv[2])
