@@ -42,7 +42,7 @@ class DataPull(object):
         #It uses a unique list of release id, loops through them individually and puts them into one dataset.
 
         try:
-            for x ,v  in enumerate([21]):
+            for x ,v  in enumerate(release_id_unique_list):
 
                 series_relese_id=requests.get('https://api.stlouisfed.org/fred/release/series?release_id='+ str(v) +'&'+str(api_key)+'&file_type=json')
                 series_relese_id = json.loads(series_relese_id.text)
@@ -67,7 +67,7 @@ class DataPull(object):
         series_id_list=['M1NS','DEMDEPNS','MDLNM','CURRNS'] #only pull money stock measures.
 
         try:
-            for x ,v  in enumerate(series_id_list):
+            for x ,v  in enumerate(series_id_unique_list):
 
                 obervations = requests.get('https://api.stlouisfed.org/fred/series/observations?series_id='+v+'&api_key=d0640df392d50e841ab2e3c22bf258ed')
                 #had issues with the obervations requets json.  pulled xml to save time.
