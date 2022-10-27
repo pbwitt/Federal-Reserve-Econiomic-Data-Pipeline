@@ -4,9 +4,7 @@ Prepared for the Federal Reserve Board
 
 by Paul Witt 
 
-### Key Features:
-
-To me, a successful data pipeline should do the following:
+A successful data pipeline should do the following:
 
 1) Automate data extraction and wrangling. The work is done upfront.  Once code is final, little work is required to maintain it, depending on the data sources.  
 
@@ -14,12 +12,15 @@ To me, a successful data pipeline should do the following:
 
 3) Produce datasets that are optimized for aggregations. In other words, datasets that can be loaded and used for analysis in other applications. I prefer to work with single flat files or data frame objects if resources permit.  Once data pull and wrangle code is written and automated, the focus is primarily on doing analysis and maintaining a code base. 
 
-For this exercise, I automated the extraction and wrangling, and produced flat files that were exported for use in Tableau.  In general, this workflow, or ETL,  is used in most successful data pipelines.  
+For this exercise, I automated the extraction and wrangling, and produced flat files that were used to perform the requested calculations.  The files were exported for use in Tableau Dashboards, which were published to Tableau Public.  In general, this workflow, or ETL, is used in most successful data pipelines.  
 
 I built several custom python modules. These modules could be made available on gitlabs.  #NOTE: because of FRED API rate limits, these modules may not function properly.  The below code is for demonstration purposes only.  All work is original. 
 
 
 ### Documentation
+
+Below is the documention for two modules I built to pull and wrangle data from the FRED API. 
+
 DataPull:
 class DataPull.pull_data()
 
@@ -32,11 +33,11 @@ DataWrangle:
 Cleans, formats and does other custom aggregations to the data pulled from FRED.  Cleans column headings, creates year and month columns.  This module is created separate from DataPull because there will be a continual need to add new functions in the future.  It is also good to keep raw data in its original format to troubleshoot and understand potential data issues.  
 functions:
 
-#### DataWrangle.clean_data(data)
+#### class DataWrangle.clean_data(data)
 accepts dataframe object.  Cleans column headings, creates year and month columns.  
 
 
-#### DataWrangle.DQ_H6Measure(data,frequency,season_adj_short,year)
+#### classs DataWrangle.DQ_H6Measure(data,frequency,season_adj_short,year)
 
 Parameters:
 data: DataFrame object.
